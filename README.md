@@ -8,7 +8,7 @@ Projeto Integrador Transdisciplinar em Engenharia de Software II, Cruzeiro do Su
 
 | | |
 |---|---|
-| **Aplicação no ar** | _(link do Render, em breve)_ |
+| **Aplicação no ar** | https://meagendai.onrender.com |
 | **Vídeo de demonstração** | _(em breve)_ |
 | **Vídeo das melhorias pós-testes** | _(em breve)_ |
 

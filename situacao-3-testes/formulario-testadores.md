@@ -1,7 +1,7 @@
 # Formulário de avaliação para os testadores
 
 **Link do formulário:** _(link do Google Forms)_
-**Endereço do sistema:** _(link do sistema publicado)_
+**Endereço do sistema:** https://meagendai.onrender.com
 
 O formulário foi montado no Google Forms (com envio de imagens) e segue o modelo mínimo pedido no enunciado:
 nome, data, o que funcionou, o que não funcionou (e o que corrigir) e funcionalidades não testadas, com motivo.
@@ -11,7 +11,7 @@ nome, data, o que funcionou, o que não funcionou (e o que corrigir) e funcional
 > Olá! Estou desenvolvendo o **MeAgendaí**, um sistema de agendamento online, para o Projeto Integrador de Engenharia
 > de Software. Você pode me ajudar testando o sistema por uns 15 minutos?
 >
-> 1. Acesse: _(link do sistema)_. O primeiro acesso pode demorar até 1 minuto para carregar.
+> 1. Acesse: https://meagendai.onrender.com. O primeiro acesso pode demorar até 1 minuto para carregar.
 > 2. Siga o roteiro abaixo (crie sua própria conta de cliente e use também as contas de demonstração).
 > 3. Preencha o formulário: _(link do formulário)_. Se algo der errado, **tire um print da tela** e anexe.
 >

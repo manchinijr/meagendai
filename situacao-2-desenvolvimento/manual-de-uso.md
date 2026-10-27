@@ -1,6 +1,6 @@
 # Manual de uso do MeAgendaí
 
-**Endereço:** _(link do sistema publicado)_
+**Endereço:** https://meagendai.onrender.com
 
 > No plano gratuito de hospedagem, o primeiro acesso depois de um período sem uso pode levar até 1 minuto.
 > É só aguardar a página carregar.

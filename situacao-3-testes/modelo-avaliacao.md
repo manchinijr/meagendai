@@ -1,6 +1,6 @@
 # MeAgendaí: avaliações dos testadores
 
-Sistema avaliado: _(link do sistema)_ · Versão testada: _(commit / data)_
+Sistema avaliado: https://meagendai.onrender.com · Versão testada: _(commit / data)_
 
 ---
 
