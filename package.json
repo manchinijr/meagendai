@@ -1,0 +1,11 @@
+{
+  "name": "meagendai-front",
+  "private": true,
+  "description": "Testes do JavaScript do front-end do MeAgendaí",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  }
+}
