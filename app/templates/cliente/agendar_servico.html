@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_macros.html" import passos %}
+{% block titulo %}Agendar: serviço{% endblock %}
+{% block conteudo %}
+{{ passos(1) }}
+<h1 class="h4 mb-3">Qual serviço você deseja?</h1>
+{% if bloqueado %}
+  <div class="alert alert-warning">Seu agendamento online está bloqueado por faltas. Entre em contato com o estabelecimento.</div>
+{% endif %}
+<div class="list-group shadow-sm">
+  {% for s in servicos %}
+    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3{% if bloqueado %} disabled{% endif %}"
+       href="{{ url_for('cliente.escolher_profissional', servico_id=s.id) }}"{% if bloqueado %} aria-disabled="true"{% endif %}>
+      <span>
+        <strong>{{ s.nome }}</strong><br>
+        <small class="text-muted">{{ s.descricao or '' }}</small>
+      </span>
+      <span class="text-end">
+        <strong>{{ s.preco | moeda }}</strong><br>
+        <small class="text-muted">{{ s.duracao_min }} min</small>
+      </span>
+    </a>
+  {% else %}
+    <p class="text-muted">Nenhum serviço disponível no momento.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Início{% endblock %}
+{% block conteudo %}
+<section class="hero rounded-4 p-4 p-md-5 mb-5">
+  <div class="row align-items-center">
+    <div class="col-lg-7">
+      <h1 class="display-6 fw-bold">Agende seu horário em poucos cliques</h1>
+      <p class="lead mb-4">Escolha o serviço, o profissional e o horário livre. Nada de troca de mensagens nem conflito de agenda.</p>
+      {% if usuario.is_authenticated and usuario.perfil == Perfil.CLIENTE %}
+        <a class="btn btn-light btn-lg" href="{{ url_for('cliente.agendar') }}"><i class="bi bi-calendar-plus"></i> Agendar agora</a>
+      {% elif not usuario.is_authenticated %}
+        <a class="btn btn-light btn-lg me-2" href="{{ url_for('auth.cadastro') }}">Criar conta grátis</a>
+        <a class="btn btn-outline-light btn-lg" href="{{ url_for('auth.login') }}">Já tenho conta</a>
+      {% endif %}
+    </div>
+    <div class="col-lg-5 d-none d-lg-block text-center">
+      <i class="bi bi-calendar2-week hero-icone"></i>
+    </div>
+  </div>
+</section>
+
+<h2 class="h4 mb-3">Nossos serviços</h2>
+{% if servicos %}
+  <div class="row g-3">
+    {% for s in servicos %}
+      <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h3 class="h6 card-title">{{ s.nome }}</h3>
+            <p class="card-text text-muted small">{{ s.descricao or '' }}</p>
+          </div>
+          <div class="card-footer bg-transparent d-flex justify-content-between">
+            <span><i class="bi bi-clock"></i> {{ s.duracao_min }} min</span>
+            <strong>{{ s.preco | moeda }}</strong>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted">Nenhum serviço disponível no momento.</p>
+{% endif %}
+{% endblock %}

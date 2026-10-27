@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_macros.html" import badge_status %}
+{% block titulo %}Minha agenda{% endblock %}
+{% block conteudo %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h4 mb-0">Minha agenda</h1>
+  <div class="btn-group" role="group" aria-label="Visão">
+    <a class="btn btn-sm {{ 'btn-marca' if visao == 'dia' else 'btn-outline-marca' }}" href="{{ url_for('profissional.agenda', data=data.isoformat(), visao='dia') }}">Dia</a>
+    <a class="btn btn-sm {{ 'btn-marca' if visao == 'semana' else 'btn-outline-marca' }}" href="{{ url_for('profissional.agenda', data=data.isoformat(), visao='semana') }}">Semana</a>
+  </div>
+</div>
+
+<div class="d-flex align-items-center gap-2 mb-4">
+  <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('profissional.agenda', data=anterior.isoformat(), visao=visao) }}" aria-label="Anterior"><i class="bi bi-chevron-left"></i></a>
+  <form method="get" class="d-flex gap-2">
+    <input type="hidden" name="visao" value="{{ visao }}">
+    <input type="date" class="form-control form-control-sm" name="data" value="{{ data.isoformat() }}" onchange="this.form.submit()" aria-label="Data">
+  </form>
+  <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('profissional.agenda', data=seguinte.isoformat(), visao=visao) }}" aria-label="Seguinte"><i class="bi bi-chevron-right"></i></a>
+  <a class="btn btn-link btn-sm" href="{{ url_for('profissional.agenda', visao=visao) }}">Hoje</a>
+</div>
+
+{% for dia in dias %}
+  <h2 class="h6 text-uppercase text-muted mt-3">{{ dia | dia_semana }}, {{ dia | data_br }}</h2>
+  {% for ag in por_dia.get(dia, []) %}
+    <div class="card shadow-sm mb-2 {{ 'opacity-50' if ag.status == 'CANCELADO' else '' }}">
+      <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
+        <div>
+          <strong>{{ ag.inicio | hora }}–{{ ag.fim | hora }}</strong> · {{ ag.servico.nome }}<br>
+          <span class="text-muted small">{{ ag.cliente.nome }}{% if ag.cliente.telefone %} · {{ ag.cliente.telefone }}{% endif %}{% if ag.observacao %} · "{{ ag.observacao }}"{% endif %}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          {{ badge_status(ag) }}
+          {% if ag.status == 'AGENDADO' and ag.inicio <= agora %}
+            {% for status, rotulo, cor in [('REALIZADO', 'Realizado', 'success'), ('FALTOU', 'Faltou', 'warning')] %}
+              <form method="post" action="{{ url_for('profissional.marcar_status', agendamento_id=ag.id) }}">
+                {{ form.csrf_token }}
+                <input type="hidden" name="status" value="{{ status }}">
+                <input type="hidden" name="voltar" value="{{ request.full_path }}">
+                <button class="btn btn-sm btn-outline-{{ cor }}" type="submit">{{ rotulo }}</button>
+              </form>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p class="text-muted small">Sem atendimentos.</p>
+  {% endfor %}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<div class="text-center py-5">
+  <p class="display-4 fw-bold text-marca">{{ codigo }}</p>
+  <h1 class="h3">{{ titulo }}</h1>
+  <p class="text-muted">{{ mensagem }}</p>
+  <a class="btn btn-marca" href="{{ url_for('cliente.index') }}">Voltar ao início</a>
+</div>
+{% endblock %}

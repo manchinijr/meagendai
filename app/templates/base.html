@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}MeAgendaí{% endblock %} · MeAgendaí</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/estilo.css') }}" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<a class="visually-hidden-focusable" href="#conteudo">Pular para o conteúdo</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-marca">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ url_for('cliente.index') }}">
+      <i class="bi bi-calendar2-check"></i> MeAgendaí
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+            aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav me-auto">
+        {% if usuario.is_authenticated %}
+          {% if usuario.perfil == Perfil.CLIENTE %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('cliente.agendar') }}">Agendar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('cliente.meus_agendamentos') }}">Meus agendamentos</a></li>
+          {% elif usuario.perfil == Perfil.PROFISSIONAL %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('profissional.agenda') }}">Minha agenda</a></li>
+          {% elif usuario.perfil == Perfil.ADMIN %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.painel') }}">Painel</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.agendamentos') }}">Agendamentos</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.servicos') }}">Serviços</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.profissionais') }}">Profissionais</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.clientes') }}">Clientes</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.configuracoes') }}">Configurações</a></li>
+          {% endif %}
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav">
+        {% if usuario.is_authenticated %}
+          <li class="nav-item"><span class="navbar-text me-3"><i class="bi bi-person-circle"></i> {{ usuario.primeiro_nome }}</span></li>
+          <li class="nav-item">
+            <form method="post" action="{{ url_for('auth.logout') }}" class="d-inline">
+              {{ form_logout.csrf_token }}
+              <button class="btn btn-outline-light btn-sm mt-1" type="submit">Sair</button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Entrar</a></li>
+          <li class="nav-item"><a class="btn btn-light btn-sm ms-lg-2 mt-1" href="{{ url_for('auth.cadastro') }}">Criar conta</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="conteudo" class="container py-4 flex-grow-1">
+  {% with mensagens = get_flashed_messages(with_categories=true) %}
+    {% for categoria, mensagem in mensagens %}
+      <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+        {{ mensagem }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+  {% block conteudo %}{% endblock %}
+</main>
+
+<footer class="py-3 border-top text-center text-muted small">
+  MeAgendaí · Projeto Integrador Transdisciplinar em Engenharia de Software II
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/validacoes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

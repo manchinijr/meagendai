@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo %}
+{% block titulo %}Configurações{% endblock %}
+{% block conteudo %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <h1 class="h4 mb-3">Configurações</h1>
+    <form method="post" novalidate class="card card-body shadow-sm">
+      {{ form.csrf_token }}
+      {{ campo(form.ANTECEDENCIA_CANCEL_H, min=0, max=168, ajuda="Abaixo deste prazo, o cliente não consegue cancelar nem remarcar pelo sistema.") }}
+      {{ campo(form.LIMITE_FALTAS, min=1, max=20) }}
+      {{ campo(form.PASSO_SLOT_MIN, min=5, max=120, step=5, ajuda="Ex.: 15 mostra 09:00, 09:15, 09:30…") }}
+      <button class="btn btn-marca" type="submit">Salvar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

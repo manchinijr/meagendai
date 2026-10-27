@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "_macros.html" import badge_status %}
+{% block titulo %}Agendamentos{% endblock %}
+{% block conteudo %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+  <h1 class="h4 mb-0">Agendamentos</h1>
+  <form method="get" class="d-flex flex-wrap gap-2 align-items-end">
+    <div>
+      <label for="data" class="form-label small mb-0">Data</label>
+      <input type="date" class="form-control form-control-sm" id="data" name="data" value="{{ data.isoformat() }}">
+    </div>
+    <div>
+      <label for="status" class="form-label small mb-0">Situação</label>
+      <select class="form-select form-select-sm" id="status" name="status">
+        <option value="">Todas</option>
+        {% for valor, rotulo in rotulos.items() %}
+          <option value="{{ valor }}" {{ 'selected' if status == valor else '' }}>{{ rotulo }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button class="btn btn-marca btn-sm" type="submit">Filtrar</button>
+  </form>
+</div>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead><tr><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Profissional</th><th>Valor</th><th>Situação</th><th></th></tr></thead>
+    <tbody>
+      {% for ag in agendamentos %}
+        <tr>
+          <td>{{ ag.inicio | hora }}–{{ ag.fim | hora }}</td>
+          <td>{{ ag.cliente.nome }}</td>
+          <td>{{ ag.servico.nome }}</td>
+          <td>{{ ag.profissional.nome }}</td>
+          <td>{{ ag.preco_cobrado | moeda }}</td>
+          <td>{{ badge_status(ag) }}</td>
+          <td class="text-end text-nowrap">
+            {% if ag.status == 'AGENDADO' %}
+              {% if ag.inicio <= agora %}
+                {% for st, rotulo, cor in [('REALIZADO', 'Realizado', 'success'), ('FALTOU', 'Faltou', 'warning')] %}
+                  <form method="post" action="{{ url_for('profissional.marcar_status', agendamento_id=ag.id) }}" class="d-inline">
+                    {{ form.csrf_token }}
+                    <input type="hidden" name="status" value="{{ st }}">
+                    <input type="hidden" name="voltar" value="{{ request.full_path }}">
+                    <button class="btn btn-sm btn-outline-{{ cor }}" type="submit">{{ rotulo }}</button>
+                  </form>
+                {% endfor %}
+              {% endif %}
+              <form method="post" action="{{ url_for('admin.cancelar_agendamento', agendamento_id=ag.id) }}" class="d-inline"
+                    data-confirmar="Cancelar o agendamento de {{ ag.cliente.nome }} às {{ ag.inicio | hora }}?">
+                {{ form.csrf_token }}
+                <button class="btn btn-sm btn-outline-danger" type="submit">Cancelar</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="text-muted">Nenhum agendamento nesta data.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

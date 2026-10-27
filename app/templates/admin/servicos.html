@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Serviços{% endblock %}
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Serviços</h1>
+  <a class="btn btn-marca" href="{{ url_for('admin.servico_form') }}"><i class="bi bi-plus-lg"></i> Novo serviço</a>
+</div>
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead><tr><th>Nome</th><th>Duração</th><th>Preço</th><th>Situação</th><th></th></tr></thead>
+    <tbody>
+      {% for s in servicos %}
+        <tr class="{{ 'text-muted' if not s.ativo else '' }}">
+          <td>{{ s.nome }}</td>
+          <td>{{ s.duracao_min }} min</td>
+          <td>{{ s.preco | moeda }}</td>
+          <td><span class="badge text-bg-{{ 'success' if s.ativo else 'secondary' }}">{{ 'Ativo' if s.ativo else 'Inativo' }}</span></td>
+          <td class="text-end"><a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin.servico_form', servico_id=s.id) }}">Editar</a></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="text-muted">Nenhum serviço cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

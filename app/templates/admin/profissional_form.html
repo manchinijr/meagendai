@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo %}
+{% block titulo %}{{ 'Editar' if profissional else 'Novo' }} profissional{% endblock %}
+{% block conteudo %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h1 class="h4 mb-3">{{ 'Editar profissional' if profissional else 'Novo profissional' }}</h1>
+    <form method="post" novalidate data-validar class="card card-body shadow-sm">
+      {{ form.csrf_token }}
+      <div class="row">
+        <div class="col-md-6">{{ campo(form.nome) }}</div>
+        <div class="col-md-6">{{ campo(form.especialidade, placeholder="Ex.: Barbeiro") }}</div>
+        <div class="col-md-6">{{ campo(form.email) }}</div>
+        <div class="col-md-6">{{ campo(form.telefone, placeholder="(11) 91234-5678", **{"data-mascara": "telefone"}) }}</div>
+      </div>
+      {{ campo(form.senha, autocomplete="new-password",
+               ajuda=("Deixe em branco para manter a senha atual." if profissional else "O profissional usará este e-mail e senha para ver a agenda.")) }}
+      <fieldset class="mb-3">
+        <legend class="form-label fs-6">{{ form.servicos.label.text }}</legend>
+        {% for opcao in form.servicos %}
+          <div class="form-check form-check-inline">
+            {{ opcao(class="form-check-input") }} {{ opcao.label(class="form-check-label") }}
+          </div>
+        {% else %}
+          <p class="text-muted small">Cadastre os serviços primeiro.</p>
+        {% endfor %}
+      </fieldset>
+      {{ campo(form.ativo) }}
+      <div class="d-flex gap-2">
+        <button class="btn btn-marca" type="submit">Salvar</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('admin.profissionais') }}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

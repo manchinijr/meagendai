@@ -1,0 +1,83 @@
+:root {
+  --marca: #4f46e5;
+  --marca-escura: #3730a3;
+  --marca-clara: #eef2ff;
+}
+
+.bg-marca { background-color: var(--marca); }
+.text-marca { color: var(--marca); }
+
+.btn-marca {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--marca);
+  --bs-btn-border-color: var(--marca);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--marca-escura);
+  --bs-btn-hover-border-color: var(--marca-escura);
+  --bs-btn-active-bg: var(--marca-escura);
+  --bs-btn-disabled-bg: var(--marca);
+  --bs-btn-disabled-border-color: var(--marca);
+}
+
+.btn-outline-marca {
+  --bs-btn-color: var(--marca);
+  --bs-btn-border-color: var(--marca);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--marca);
+  --bs-btn-hover-border-color: var(--marca);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--marca);
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--marca) 0%, #7c3aed 100%);
+  color: #fff;
+}
+
+.hero-icone { font-size: 9rem; opacity: 0.85; }
+
+.passos li {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #f1f3f5;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.passos li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.25rem;
+  border-radius: 50%;
+  background: #dee2e6;
+  font-weight: 600;
+}
+
+.passos li.ativo { background: var(--marca-clara); color: var(--marca); font-weight: 600; }
+.passos li.ativo span { background: var(--marca); color: #fff; }
+.passos li.feito span { background: #198754; color: #fff; }
+
+.card-escolha { transition: transform 0.1s, box-shadow 0.1s; }
+.card-escolha:hover, .card-escolha:focus { transform: translateY(-2px); box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important; }
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--marca-clara);
+  color: var(--marca);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.slot { min-width: 5rem; }
+.slot.active { color: #fff; background: var(--marca); }
+
+.metrica { font-variant-numeric: tabular-nums; }

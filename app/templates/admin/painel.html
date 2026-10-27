@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block titulo %}Painel{% endblock %}
+{% block conteudo %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+  <h1 class="h4 mb-0">Painel</h1>
+  <form id="filtro-painel" class="d-flex flex-wrap gap-2 align-items-end" data-url="{{ url_for('api.painel') }}">
+    <div>
+      <label for="ini" class="form-label small mb-0">De</label>
+      <input type="date" class="form-control form-control-sm" id="ini" name="ini" value="{{ ini_padrao.isoformat() }}">
+    </div>
+    <div>
+      <label for="fim" class="form-label small mb-0">Até</label>
+      <input type="date" class="form-control form-control-sm" id="fim" name="fim" value="{{ fim_padrao.isoformat() }}">
+    </div>
+    <div>
+      <label for="profissional" class="form-label small mb-0">Profissional</label>
+      <select class="form-select form-select-sm" id="profissional" name="profissional">
+        <option value="">Todos</option>
+        {% for p in profissionais %}<option value="{{ p.id }}">{{ p.nome }}</option>{% endfor %}
+      </select>
+    </div>
+    <button class="btn btn-marca btn-sm" type="submit">Aplicar</button>
+  </form>
+</div>
+
+<div id="painel-erro" class="alert alert-danger d-none" role="alert"></div>
+
+<div class="row g-3 mb-4" aria-live="polite">
+  {% for id, rotulo, icone in [('total', 'Agendamentos', 'calendar-check'), ('taxa_faltas', 'Taxa de faltas', 'person-x'), ('faturamento_previsto', 'Faturamento previsto', 'hourglass-split'), ('faturamento_realizado', 'Faturamento realizado', 'cash-coin')] %}
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted small mb-1"><i class="bi bi-{{ icone }}"></i> {{ rotulo }}</p>
+          <p class="h4 mb-0 metrica" id="m-{{ id }}"><span class="placeholder col-6"></span></p>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6">Agendamentos por dia</h2>
+        <canvas id="grafico-dias" height="120" aria-label="Gráfico de agendamentos por dia" role="img"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6">Serviços mais agendados</h2>
+        <canvas id="grafico-servicos" height="220" aria-label="Gráfico dos serviços mais agendados" role="img"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h6">Próximos atendimentos</h2>
+    {% if proximos %}
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead><tr><th>Quando</th><th>Cliente</th><th>Serviço</th><th>Profissional</th></tr></thead>
+          <tbody>
+            {% for ag in proximos %}
+              <tr>
+                <td>{{ ag.inicio | data_br }} {{ ag.inicio | hora }}</td>
+                <td>{{ ag.cliente.nome }}</td>
+                <td>{{ ag.servico.nome }}</td>
+                <td>{{ ag.profissional.nome }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">Nenhum atendimento futuro.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/painel.js') }}"></script>
+{% endblock %}

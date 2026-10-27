@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% from "_macros.html" import passos %}
+{% block titulo %}{{ 'Remarcar' if remarcando else 'Agendar: horário' }}{% endblock %}
+{% block conteudo %}
+{% if not remarcando %}{{ passos(3) }}{% endif %}
+<h1 class="h4">{{ 'Escolha o novo horário' if remarcando else 'Escolha a data e o horário' }}</h1>
+<p class="text-muted">
+  {{ servico.nome }} ({{ servico.duracao_min }} min) com <strong>{{ profissional.nome }}</strong>
+  {% if remarcando %}· horário atual: {{ remarcando.inicio | data_br }} às {{ remarcando.inicio | hora }}{% endif %}
+</p>
+
+<div class="row g-4">
+  <div class="col-md-5 col-lg-4">
+    <form method="get" id="form-data">
+      <label for="data" class="form-label">Data</label>
+      <input type="date" class="form-control" id="data" name="data" value="{{ data.isoformat() }}"
+             min="{{ hoje.isoformat() }}" max="{{ data_max.isoformat() }}">
+      <noscript><button class="btn btn-outline-secondary mt-2" type="submit">Ver horários</button></noscript>
+    </form>
+  </div>
+
+  <div class="col-md-7 col-lg-8">
+    <p class="form-label mb-2">Horários livres em <span id="data-rotulo">{{ data | data_br }} ({{ data | dia_semana }})</span></p>
+    <div id="horarios" class="d-flex flex-wrap gap-2"
+         data-servico="{{ servico.id }}" data-profissional="{{ profissional.id }}"
+         {% if remarcando %}data-ignorar="{{ remarcando.id }}"{% endif %}
+         data-url="{{ url_for('api.horarios') }}" aria-live="polite">
+      {% for h in horarios %}
+        <button type="button" class="btn btn-outline-marca slot" data-inicio="{{ h.isoformat() }}">{{ h | hora }}</button>
+      {% else %}
+        <p class="text-muted mb-0">Nenhum horário livre nesta data. Tente outro dia.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<form method="post" action="{{ acao }}" id="form-confirmar" class="card shadow-sm mt-4 d-none">
+  <div class="card-body">
+    {{ form.csrf_token }}
+    <input type="hidden" name="servico_id" value="{{ servico.id }}">
+    <input type="hidden" name="profissional_id" value="{{ profissional.id }}">
+    <input type="hidden" name="inicio" id="inicio">
+    <h2 class="h5">Confirme {{ 'a remarcação' if remarcando else 'seu agendamento' }}</h2>
+    <p class="mb-2" id="resumo"></p>
+    {% if not remarcando %}
+      <label for="observacao" class="form-label">Observação (opcional)</label>
+      <input type="text" class="form-control mb-3" id="observacao" name="observacao" maxlength="255"
+             placeholder="Ex.: prefiro máquina 2 nas laterais">
+    {% endif %}
+    <button type="submit" class="btn btn-marca"><i class="bi bi-check2-circle"></i> Confirmar</button>
+  </div>
+</form>
+
+<a class="btn btn-link mt-3 px-0" href="{{ url_for('cliente.meus_agendamentos') if remarcando else url_for('cliente.escolher_profissional', servico_id=servico.id) }}">
+  <i class="bi bi-arrow-left"></i> Voltar
+</a>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/agendamento.js') }}"></script>
+{% endblock %}

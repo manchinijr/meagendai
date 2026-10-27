@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Profissionais{% endblock %}
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Profissionais</h1>
+  <a class="btn btn-marca" href="{{ url_for('admin.profissional_form') }}"><i class="bi bi-plus-lg"></i> Novo profissional</a>
+</div>
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead><tr><th>Nome</th><th>E-mail</th><th>Serviços</th><th>Jornada</th><th>Situação</th><th></th></tr></thead>
+    <tbody>
+      {% for p in profissionais %}
+        <tr class="{{ 'text-muted' if not p.ativo else '' }}">
+          <td>{{ p.nome }}<br><small class="text-muted">{{ p.especialidade or '' }}</small></td>
+          <td>{{ p.usuario.email }}</td>
+          <td>{{ p.servicos | map(attribute='nome') | join(', ') or '—' }}</td>
+          <td>{{ p.jornadas | length }} período(s)</td>
+          <td><span class="badge text-bg-{{ 'success' if p.ativo else 'secondary' }}">{{ 'Ativo' if p.ativo else 'Inativo' }}</span></td>
+          <td class="text-end text-nowrap">
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin.profissional_form', profissional_id=p.id) }}">Editar</a>
+            <a class="btn btn-outline-marca btn-sm" href="{{ url_for('admin.jornada', profissional_id=p.id) }}">Jornada</a>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6" class="text-muted">Nenhum profissional cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

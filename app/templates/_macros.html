@@ -1,0 +1,33 @@
+{% macro campo(field, tipo=None, ajuda=None) %}
+  <div class="mb-3">
+    {% if field.type == 'BooleanField' %}
+      <div class="form-check">
+        {{ field(class="form-check-input" + (" is-invalid" if field.errors else "")) }}
+        {{ field.label(class="form-check-label") }}
+        {% for erro in field.errors %}<div class="invalid-feedback">{{ erro }}</div>{% endfor %}
+      </div>
+    {% else %}
+      {{ field.label(class="form-label") }}
+      {% set base = "form-select" if field.type == "SelectField" else "form-control" %}
+      {{ field(class=base + (" is-invalid" if field.errors else ""), **kwargs) }}
+      {% if ajuda %}<div class="form-text">{{ ajuda }}</div>{% endif %}
+      {% for erro in field.errors %}<div class="invalid-feedback">{{ erro }}</div>{% endfor %}
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro badge_status(ag) %}
+  {% set cores = {'AGENDADO': 'primary', 'REALIZADO': 'success', 'FALTOU': 'warning', 'CANCELADO': 'secondary'} %}
+  <span class="badge text-bg-{{ cores[ag.status] }}">{{ ag.status_rotulo }}</span>
+{% endmacro %}
+
+{% macro passos(atual) %}
+  <ol class="passos list-unstyled d-flex gap-2 mb-4" aria-label="Etapas do agendamento">
+    {% for rotulo in ['Serviço', 'Profissional', 'Horário'] %}
+      <li class="{{ 'ativo' if loop.index == atual else ('feito' if loop.index < atual else '') }}"
+          {% if loop.index == atual %}aria-current="step"{% endif %}>
+        <span>{{ loop.index }}</span> {{ rotulo }}
+      </li>
+    {% endfor %}
+  </ol>
+{% endmacro %}
