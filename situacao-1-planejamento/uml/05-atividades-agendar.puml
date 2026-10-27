@@ -1,0 +1,37 @@
+@startuml atividades-agendar
+title MeAgendaí: Diagrama de Atividades (fluxo de agendamento)
+|Cliente|
+start
+if (Está logado?) then (não)
+  :Entrar ou criar conta;
+endif
+|Sistema|
+if (Cliente bloqueado por faltas? [RN04]) then (sim)
+  :Exibir aviso E07;
+  stop
+endif
+|Cliente|
+:Escolher serviço;
+:Escolher profissional;
+:Escolher data;
+|Sistema|
+:Calcular horários livres\n(jornada, agendamentos, passo) [RN01, RN02, RN05];
+if (Há horários livres?) then (não)
+  :Exibir "Nenhum horário livre nesta data";
+  |Cliente|
+  :Escolher outra data;
+  detach
+endif
+|Cliente|
+:Escolher horário;
+:Revisar resumo e confirmar;
+|Sistema|
+:Validar novamente as regras;
+if (Horário ainda livre?) then (sim)
+  :Gravar agendamento\n(status AGENDADO, preço do momento);
+  :Exibir confirmação S01;
+else (não)
+  :Exibir mensagem E03\ncom horários atualizados;
+endif
+stop
+@enduml

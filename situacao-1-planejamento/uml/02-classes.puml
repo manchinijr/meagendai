@@ -1,0 +1,125 @@
+@startuml classes
+title MeAgendaí: Diagrama de Classes (persistência e serviços)
+skinparam classAttributeIconSize 0
+hide empty members
+
+package "Model" {
+  class Usuario {
+    - id: int
+    - nome: str
+    - email: str
+    - telefone: str
+    - senha_hash: str
+    - perfil: Perfil
+    - ativo: bool
+    - faltas_zeradas_em: datetime
+    - criado_em: datetime
+    + definir_senha(senha)
+    + checar_senha(senha): bool
+  }
+
+  enum Perfil {
+    ADMIN
+    PROFISSIONAL
+    CLIENTE
+  }
+
+  class Profissional {
+    - id: int
+    - especialidade: str
+    - ativo: bool
+    + realiza(servico): bool
+  }
+
+  class Servico {
+    - id: int
+    - nome: str
+    - descricao: str
+    - duracao_min: int
+    - preco: Decimal
+    - ativo: bool
+  }
+
+  class Jornada {
+    - id: int
+    - dia_semana: int
+    - hora_inicio: time
+    - hora_fim: time
+  }
+
+  class Agendamento {
+    - id: int
+    - inicio: datetime
+    - fim: datetime
+    - status: StatusAgendamento
+    - preco_cobrado: Decimal
+    - observacao: str
+    - criado_em: datetime
+    - atualizado_em: datetime
+  }
+
+  enum StatusAgendamento {
+    AGENDADO
+    CANCELADO
+    REALIZADO
+    FALTOU
+  }
+
+  class Configuracao {
+    - chave: str
+    - valor: str
+    - descricao: str
+  }
+}
+
+package "Service" {
+  class AgendamentoService <<service>> {
+    + criar_agendamento(cliente, servico_id, profissional_id, inicio)
+    + cancelar(agendamento, solicitante)
+    + remarcar(agendamento, novo_inicio, solicitante)
+    + marcar_status(agendamento, status, solicitante)
+    + faltas_do_cliente(cliente): int
+    + zerar_faltas(cliente)
+  }
+  class DisponibilidadeService <<service>> {
+    + horarios_livres(servico_id, profissional_id, data): list
+  }
+  class RelatorioService <<service>> {
+    + metricas_painel(ini, fim, profissional_id): dict
+    + proximos_agendamentos(limite): list
+  }
+  class CadastroService <<service>> {
+    + cadastrar_cliente(...)
+    + salvar_servico(...)
+    + salvar_profissional(...)
+    + adicionar_jornada(...)
+  }
+  class Regras <<module>> {
+    + sobrepoe(a_ini, a_fim, b_ini, b_fim): bool
+    + cabe_na_jornada(jornadas, inicio, fim): bool
+    + gerar_horarios_livres(...): list
+    + pode_cancelar(inicio, agora, horas): bool
+    + cliente_bloqueado(faltas, limite): bool
+    + calcular_metricas(agendamentos): dict
+  }
+}
+
+Usuario "1" -- "0..1" Profissional : é >
+Usuario ..> Perfil
+Profissional "1" *-- "0..*" Jornada : possui >
+Profissional "0..*" -- "0..*" Servico : realiza >
+Usuario "1" -- "0..*" Agendamento : cliente <
+Profissional "1" -- "0..*" Agendamento : atende >
+Servico "1" -- "0..*" Agendamento : refere-se <
+Agendamento ..> StatusAgendamento
+
+AgendamentoService ..> Agendamento
+AgendamentoService ..> Regras
+AgendamentoService ..> DisponibilidadeService
+DisponibilidadeService ..> Regras
+DisponibilidadeService ..> Jornada
+RelatorioService ..> Regras
+CadastroService ..> Servico
+CadastroService ..> Profissional
+AgendamentoService ..> Configuracao
+@enduml

@@ -1,0 +1,83 @@
+@startuml modelo-logico
+title MeAgendaí: Modelo Lógico (normalizado, 3FN)
+hide circle
+hide methods
+skinparam linetype ortho
+
+entity usuario {
+  * id : SERIAL <<PK>>
+  --
+  * nome : VARCHAR(100)
+  * email : VARCHAR(120) <<UNIQUE>>
+  telefone : VARCHAR(20)
+  * senha_hash : VARCHAR(255)
+  * perfil : VARCHAR(12) <<CHECK>>
+  * ativo : BOOLEAN
+  faltas_zeradas_em : TIMESTAMPTZ
+  * criado_em : TIMESTAMPTZ
+}
+
+entity profissional {
+  * id : SERIAL <<PK>>
+  --
+  * usuario_id : INTEGER <<FK, UNIQUE>>
+  especialidade : VARCHAR(80)
+  * ativo : BOOLEAN
+}
+
+entity servico {
+  * id : SERIAL <<PK>>
+  --
+  * nome : VARCHAR(80) <<UNIQUE>>
+  descricao : VARCHAR(255)
+  * duracao_min : SMALLINT <<CHECK 5..480>>
+  * preco : NUMERIC(10,2) <<CHECK ≥ 0>>
+  * ativo : BOOLEAN
+}
+
+entity profissional_servico {
+  * profissional_id : INTEGER <<PK, FK>>
+  * servico_id : INTEGER <<PK, FK>>
+}
+
+entity jornada {
+  * id : SERIAL <<PK>>
+  --
+  * profissional_id : INTEGER <<FK>>
+  * dia_semana : SMALLINT <<CHECK 0..6>>
+  * hora_inicio : TIME
+  * hora_fim : TIME <<CHECK maior que início>>
+  <<EXCLUDE: períodos sobrepostos>>
+}
+
+entity agendamento {
+  * id : SERIAL <<PK>>
+  --
+  * cliente_id : INTEGER <<FK>>
+  * profissional_id : INTEGER <<FK>>
+  * servico_id : INTEGER <<FK>>
+  * inicio : TIMESTAMPTZ
+  * fim : TIMESTAMPTZ <<CHECK maior que início>>
+  * status : VARCHAR(10) <<CHECK>>
+  * preco_cobrado : NUMERIC(10,2)
+  observacao : VARCHAR(255)
+  * criado_em : TIMESTAMPTZ
+  * atualizado_em : TIMESTAMPTZ
+  <<EXCLUDE: mesmo profissional, horários sobrepostos>>
+}
+
+entity configuracao {
+  * chave : VARCHAR(40) <<PK>>
+  --
+  * valor : VARCHAR(100)
+  descricao : VARCHAR(255)
+}
+
+usuario ||--o| profissional
+usuario ||--o{ agendamento
+profissional ||--o{ jornada
+profissional ||--o{ profissional_servico
+servico ||--o{ profissional_servico
+profissional ||--o{ agendamento
+servico ||--o{ agendamento
+@enduml

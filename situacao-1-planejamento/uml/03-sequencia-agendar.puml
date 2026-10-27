@@ -1,0 +1,43 @@
+@startuml sequencia-agendar
+title MeAgendaí: Diagrama de Sequência (UC05 Agendar serviço)
+autonumber
+actor Cliente
+participant "Navegador\n(agendamento.js)" as JS
+participant "ClienteController\n/ ApiController" as C
+participant "DisponibilidadeService" as D
+participant "AgendamentoService" as S
+participant "Regras" as R
+database "PostgreSQL" as DB
+
+Cliente -> JS : escolhe a data
+JS -> C : GET /api/horarios?servico&profissional&data
+C -> D : horarios_livres(servico, profissional, data)
+D -> DB : jornadas + agendamentos do dia
+DB --> D : registros
+D -> R : gerar_horarios_livres(...)
+R --> D : lista de horários
+D --> C : horários
+C --> JS : JSON
+JS --> Cliente : botões de horário
+
+Cliente -> JS : escolhe horário e confirma
+JS -> C : POST /agendamentos (csrf, servico, profissional, inicio)
+C -> S : criar_agendamento(cliente, ...)
+S -> DB : conta faltas do cliente
+S -> R : cliente_bloqueado(faltas, limite)  [RN04]
+S -> R : cabe_na_jornada(...)  [RN02]
+S -> R : sobrepoe(...)  [RN01]
+S -> DB : INSERT agendamento
+alt horário livre
+  DB --> S : ok
+  S --> C : Agendamento
+  C --> Cliente : redireciona + "Agendamento confirmado..." (S01)
+else outro cliente reservou no mesmo instante
+  DB --> S : violação da constraint EXCLUDE (23P01)
+  S --> C : HorarioIndisponivelError
+  C --> Cliente : mensagem E03 + horários atualizados
+else regra violada
+  S --> C : erro de domínio (E04, E05 ou E07)
+  C --> Cliente : mensagem correspondente
+end
+@enduml

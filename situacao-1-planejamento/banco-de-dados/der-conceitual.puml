@@ -1,0 +1,37 @@
+@startuml der-conceitual
+title MeAgendaí: Modelo Conceitual (DER)
+hide circle
+hide methods
+left to right direction
+skinparam nodesep 60
+skinparam ranksep 90
+
+entity "USUARIO" as usuario {
+  nome, e-mail, telefone,
+  perfil, senha
+}
+entity "PROFISSIONAL" as profissional {
+  especialidade
+}
+entity "SERVICO" as servico {
+  nome, duração, preço
+}
+entity "JORNADA" as jornada {
+  dia da semana,
+  hora início, hora fim
+}
+entity "AGENDAMENTO" as agendamento {
+  início, fim, status,
+  preço cobrado
+}
+entity "CONFIGURACAO" as configuracao {
+  chave, valor
+}
+
+usuario "1" -- "0..1" profissional : é
+profissional "1" -- "0..N" jornada : possui
+profissional "N" -- "N" servico : realiza
+usuario "1" -- "0..N" agendamento : agenda (cliente)
+profissional "1" -- "0..N" agendamento : atende
+servico "1" -- "0..N" agendamento : é agendado em
+@enduml

@@ -1,0 +1,54 @@
+@startuml componentes-mvc
+title MeAgendaí: Arquitetura (MVC + camada de serviço)
+skinparam componentStyle rectangle
+
+actor Usuário
+node "Navegador" {
+  [HTML / CSS / Bootstrap] as UI
+  [JavaScript\n(validacoes, agendamento, painel)] as JS
+}
+node "Render (gunicorn + Flask)" {
+  package "Controller" {
+    [auth]
+    [cliente]
+    [profissional]
+    [admin]
+    [api (JSON)] as api
+  }
+  package "View" {
+    [templates Jinja2] as tpl
+  }
+  package "Service" {
+    [agendamento_service]
+    [disponibilidade_service]
+    [relatorio_service]
+    [cadastro_service]
+    [regras] as regras
+  }
+  package "Model" {
+    [SQLAlchemy models] as models
+  }
+}
+database "Neon\nPostgreSQL" as db
+
+Usuário --> UI
+UI --> [cliente] : HTTP
+JS --> api : fetch (JSON)
+[cliente] --> tpl
+[admin] --> tpl
+[profissional] --> tpl
+[auth] --> tpl
+[cliente] --> [agendamento_service]
+[cliente] --> [disponibilidade_service]
+[admin] --> [cadastro_service]
+[admin] --> [relatorio_service]
+[profissional] --> [agendamento_service]
+api --> [disponibilidade_service]
+api --> [relatorio_service]
+[agendamento_service] --> regras
+[disponibilidade_service] --> regras
+[relatorio_service] --> regras
+[agendamento_service] --> models
+[cadastro_service] --> models
+models --> db : SQL (psycopg)
+@enduml

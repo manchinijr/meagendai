@@ -1,0 +1,12 @@
+@startuml estados-agendamento
+title MeAgendaí: Diagrama de Estados (Agendamento)
+[*] --> AGENDADO : cliente confirma
+AGENDADO --> CANCELADO : cliente cancela (até N h antes)\nou administrador cancela
+AGENDADO --> CANCELADO : remarcação (gera novo agendamento)
+AGENDADO --> REALIZADO : profissional registra\n(após o início)
+AGENDADO --> FALTOU : profissional registra\n(após o início)
+CANCELADO --> [*]
+REALIZADO --> [*]
+FALTOU --> [*]
+note right of FALTOU : conta para o bloqueio\npor faltas (RN04)
+@enduml

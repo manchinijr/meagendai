@@ -1,0 +1,54 @@
+@startuml mapa-de-telas
+title MeAgendaí: Mapa de navegação (telas)
+skinparam rectangle {
+  RoundCorner 12
+}
+left to right direction
+
+rectangle "Início\n(serviços)" as home
+rectangle "Entrar" as login
+rectangle "Criar conta" as cadastro
+
+package "Cliente" {
+  rectangle "1. Serviço" as a1
+  rectangle "2. Profissional" as a2
+  rectangle "3. Data e horário\n+ confirmação" as a3
+  rectangle "Meus agendamentos" as meus
+  rectangle "Remarcar" as rem
+  rectangle "Cancelar\n(janela de confirmação)" as canc
+}
+
+package "Profissional" {
+  rectangle "Minha agenda\n(dia / semana)" as agenda
+}
+
+package "Administrador" {
+  rectangle "Painel" as painel
+  rectangle "Agendamentos" as ags
+  rectangle "Serviços" as servs
+  rectangle "Profissionais" as profs
+  rectangle "Jornada" as jorn
+  rectangle "Clientes" as clis
+  rectangle "Configurações" as conf
+}
+
+home --> login
+home --> cadastro
+cadastro --> a1
+login --> meus : cliente
+login --> agenda : profissional
+login --> painel : administrador
+meus --> a1
+a1 --> a2
+a2 --> a3
+a3 --> meus : confirmado
+meus --> rem
+meus --> canc
+rem --> meus
+painel --> ags
+painel --> servs
+painel --> profs
+profs --> jorn
+painel --> clis
+painel --> conf
+@enduml

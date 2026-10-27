@@ -1,0 +1,31 @@
+@startuml sequencia-registrar-atendimento
+title MeAgendaí: Diagrama de Sequência (UC10 Registrar atendimento)
+autonumber
+actor Profissional
+participant "ProfissionalController" as C
+participant "AgendamentoService" as S
+database "PostgreSQL" as DB
+
+Profissional -> C : GET /agenda?data
+C -> DB : agendamentos do profissional no período
+DB --> C : lista
+C --> Profissional : agenda do dia/semana
+
+Profissional -> C : POST /agenda/{id}/status (FALTOU)
+C -> S : marcar_status(agendamento, FALTOU, profissional)
+alt é o profissional do atendimento e o horário já começou
+  S -> DB : UPDATE status = 'FALTOU'
+  S --> C : ok
+  C --> Profissional : "Atendimento marcado como faltou."
+  note right of DB
+    A falta passa a contar para a
+    regra RN04 (bloqueio por faltas)
+  end note
+else horário ainda não começou
+  S --> C : StatusInvalidoError
+  C --> Profissional : "Só é possível registrar o atendimento depois do horário de início."
+else outro profissional
+  S --> C : PermissaoNegadaError
+  C --> Profissional : mensagem de permissão
+end
+@enduml

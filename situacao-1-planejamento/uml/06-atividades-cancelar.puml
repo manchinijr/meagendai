@@ -1,0 +1,22 @@
+@startuml atividades-cancelar
+title MeAgendaí: Diagrama de Atividades (cancelar agendamento)
+|Cliente|
+start
+:Abrir "Meus agendamentos";
+:Clicar em "Cancelar";
+:Ler o resumo na janela de confirmação;
+if (Confirmou?) then (sim)
+  |Sistema|
+  if (Faltam N horas ou mais? [RN03]) then (sim)
+    :Alterar status para CANCELADO;
+    :Liberar o horário para outros clientes;
+    :Exibir "Agendamento cancelado." (S02);
+  else (não)
+    :Exibir mensagem E06\n(prazo de cancelamento);
+  endif
+else (não)
+  |Cliente|
+  :Manter o agendamento;
+endif
+stop
+@enduml
