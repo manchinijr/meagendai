@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
       type: "line",
       data: {
         labels: dias.map(function (d) { return V.formatarDataBR(d).slice(0, 5); }),
-        datasets: [{ label: "Agendamentos", data: Object.values(dados.por_dia), borderColor: cor, backgroundColor: cor + "33", fill: true, tension: 0.3 }],
+        datasets: [{ label: "Agendamentos", data: Object.values(dados.por_dia), borderColor: cor, backgroundColor: cor + "33", fill: true, cubicInterpolationMode: "monotone" }],
       },
       options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } },
     });

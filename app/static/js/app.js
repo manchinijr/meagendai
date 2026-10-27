@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!feedback) {
       feedback = document.createElement("div");
       feedback.className = "invalid-feedback";
-      campo.after(feedback);
+      // no checkbox a mensagem vai depois do rótulo, e não entre a caixa e o texto
+      if (campo.type === "checkbox") campo.parentElement.appendChild(feedback);
+      else campo.after(feedback);
     }
     feedback.textContent = mensagem;
   }

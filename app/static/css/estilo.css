@@ -81,3 +81,11 @@
 .slot.active { color: #fff; background: var(--marca); }
 
 .metrica { font-variant-numeric: tabular-nums; }
+
+/* Em telas de toque o :hover "gruda" depois do toque; mantém o destaque só no horário selecionado. */
+@media (hover: none) {
+  .btn-outline-marca:hover:not(.active) {
+    color: var(--marca);
+    background-color: transparent;
+  }
+}
