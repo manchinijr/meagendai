@@ -38,7 +38,7 @@ Projeto Integrador Transdisciplinar em Engenharia de Software II, Cruzeiro do Su
 | Back-end | Python 3.13, Flask 3 (padrão **MVC** com Blueprints), SQLAlchemy 2, Flask-Login, Flask-WTF |
 | Front-end | HTML5, CSS3, JavaScript, Bootstrap 5, Chart.js |
 | Banco de dados | PostgreSQL 16 |
-| Testes | pytest e pytest-cov (unitários e de integração) |
+| Testes | pytest, pytest-cov, Playwright (E2E) e Vitest (JavaScript) |
 | Hospedagem | Render (aplicação) e Neon (PostgreSQL) |
 | Integração contínua | GitHub Actions |
 
@@ -98,6 +98,7 @@ python -m playwright install chromium   # uma única vez, para os testes de nave
 pytest                                  # roda todos os testes
 pytest --cov=app                        # com relatório de cobertura
 pytest tests/unit                       # só os unitários (não precisam de banco)
+npm install && npm test                 # testes do JavaScript (Vitest)
 ```
 
 | Nível (Modelo V) | Pasta | O que verifica |
@@ -120,6 +121,14 @@ o que liga cada requisito ao seu teste.
 3. Com o `DATABASE_URL` do Neon no seu `.env` local, rode uma vez: `flask init-db` e `flask seed-demo`.
 
 > No plano gratuito, o Render "dorme" após 15 minutos sem acesso; o primeiro acesso seguinte pode levar até 1 minuto.
+
+## Documentação
+
+| Situação | Documentos |
+|---|---|
+| 1. Planejamento | [Escopo](situacao-1-planejamento/escopo-e-visao.md) · [Requisitos](situacao-1-planejamento/requisitos.md) · [UML](situacao-1-planejamento/uml/README.md) · [IHC e telas](situacao-1-planejamento/ihc/README.md) · [Banco de dados](situacao-1-planejamento/banco-de-dados/README.md) · [Dicionário de dados](situacao-1-planejamento/banco-de-dados/dicionario-de-dados.md) · [Kaizen](situacao-1-planejamento/kaizen-feedback.md) |
+| 2. Desenvolvimento | [Arquitetura MVC](situacao-2-desenvolvimento/arquitetura-mvc.md) · [Manual de uso](situacao-2-desenvolvimento/manual-de-uso.md) |
+| 3. Testes | [Plano de testes](situacao-3-testes/plano-de-testes.md) · [Relatório de testes](situacao-3-testes/relatorio-de-testes.md) · [Formulário dos testadores](situacao-3-testes/formulario-testadores.md) · [Laudo de qualidade](situacao-3-testes/laudo-de-qualidade.md) |
 
 ## Estrutura do repositório
 
