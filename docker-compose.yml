@@ -1,0 +1,16 @@
+# Banco PostgreSQL local para desenvolvimento e testes: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    container_name: meagendai-pg
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: meagendai
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/criar-banco-de-teste.sql:/docker-entrypoint-initdb.d/criar-banco-de-teste.sql:ro
+
+volumes:
+  pgdata:

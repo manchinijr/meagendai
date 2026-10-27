@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambiente
+.env
+
+# Node (testes de JavaScript)
+node_modules/
+
+# Editores / sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Arquivos locais de ferramentas
+.claude/
+CLAUDE.md
+_planejamento_interno/
